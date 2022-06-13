@@ -6,132 +6,87 @@ import java.util.function.Consumer;
 
 public class AccessHistoryService<E> {
     private LinkedList<E> linkedList;
-    private int pointer = -1;
+    public int pointer = -1;
 
     public AccessHistoryService() {
         this.linkedList = new LinkedList<>();
     }
 
-    private void setPointer(){
-        if(pointer == -1) {
+    private void setPointer() {
+        if (pointer == -1) {
             pointer = 0;
         }
     }
 
-    public E currentItem(){
+    public E currentItem() {
         return linkedList.get(pointer);
     }
 
-    public E nextItem(){
-        int index = pointer;
-        final E next = this.next(index);
-        if(next == null){
-            return null;
+
+    public E nextItem() {
+        final int index = pointer + 1;
+        final ListIterator iterator = linkedList.listIterator(index);
+        if (iterator.hasNext()) {
+            pointer++;
+            return (E) iterator.next();
         }
-        pointer++;
-        return next;
+        return null;
     }
 
-    public E prevItem(){
-        int index = pointer;
-        final E prev = this.prev(index);
-        if(prev == null){
-            return null;
+    public E prevItem() {
+        final int index = pointer;
+        final ListIterator iterator = linkedList.listIterator(index);
+        if (iterator.hasPrevious()) {
+            pointer--;
+            return (E) iterator.previous();
         }
-        pointer--;
-        return prev;
+        return null;
     }
 
-    private E next(int index){
-        int sizeList = linkedList.size();
-        return index < sizeList - 1 ? linkedList.get(index+1) : null;
-    }
-
-    private E prev(int index){
-        return index > 0 ? linkedList.get(index-1) : null;
-    }
-
-    public void add(E item){
-        if(item == null){
+    public void add(E item) {
+        if (item == null) {
             throw new IllegalArgumentException();
         }
-        if(linkedList.size() == 0){
-            linkedList.add(item);
-            setPointer();
+        if (this.isFirstAdd(item)) {
             return;
         }
-
-        if (linkedList.getLast() == linkedList.get(pointer)) {
-            linkedList.add(item);
-            pointer = linkedList.size() - 1;
+        if (this.isAddLast(item)) {
             return;
         }
-
         //help gc
-        E tail = linkedList.getLast();
-        E pointerItem = linkedList.get(pointer);
-        while(pointerItem != tail){
-            linkedList.removeLast();
-            tail = linkedList.getLast();
-        }
+        this.dropAndClean();
         linkedList.add(item);
         pointer = linkedList.size() - 1;
     }
 
-    public void forEach(Consumer action){
-        linkedList.forEach(action);
+    private boolean isAddLast(E item) {
+        if (linkedList.getLast() == linkedList.get(pointer)) {
+            linkedList.add(item);
+            pointer = linkedList.size() - 1;
+            return true;
+        }
+        return false;
     }
 
-    public static void main(String[] args) {
-        AccessHistoryService controller = new AccessHistoryService();
-        controller.add("a");
-        controller.add("b");
-        controller.add("c");
-        controller.add("d");
-        controller.add("e");
-        controller.add("f");
-        controller.forEach(item -> {
-            System.out.print(item + ", ");
-        });
-        System.out.println();
-        System.out.println("--------------------------------");
+    private boolean isFirstAdd(E item) {
+        if (linkedList.size() == 0) {
+            linkedList.add(item);
+            setPointer();
+            return true;
+        }
+        return false;
+    }
 
-        System.out.println("Current Item: "+controller.currentItem());
-        System.out.println("Next Item: " +controller.nextItem());
-        System.out.println("Prev Item: " + controller.prevItem());
-        System.out.println("Current Item: "+controller.currentItem());
-        System.out.println("Prev Item: " +controller.prevItem());
-        System.out.println("Current Item: "+controller.currentItem());
-        System.out.println("Prev Item: " +controller.prevItem());
-        System.out.println("Current Item: "+controller.currentItem());
-        System.out.println("Prev Item: " +controller.prevItem());
-        System.out.println("Current Item: "+controller.currentItem());
-        System.out.println("Prev Item: " +controller.prevItem());
-        System.out.println("Current Item: "+controller.currentItem());
-        System.out.println("Prev Item: " +controller.prevItem());
-        System.out.println("Current Item: "+controller.currentItem());
-//        System.out.println("Next Item: " +controller.nextItem());
-//        System.out.println("Current Item: "+controller.currentItem());
-        controller.add("h");
-        controller.add("i");
-        controller.add("k");
+    private void dropAndClean() {
+        E tail = linkedList.getLast();
+        E pointerItem = linkedList.get(pointer);
+        while (pointerItem != tail) {
+            linkedList.removeLast();
+            tail = linkedList.getLast();
+        }
+    }
 
-        System.out.println("--------------------------------");
-        controller.forEach(item -> {
-            System.out.print(item + ", ");
-        });
-        System.out.println();
-        System.out.println("--------------------------------");
-//        System.out.println(controller.nextItem());
-//        controller.linkedList.forEach(System.out::println);
-//        System.out.println("---------------------------");
-//        controller.linkedList.remove("f");
-//        controller.linkedList.remove("a");
-//
-//        System.out.println(controller.linkedList.get(0));
-//        System.out.println(controller.linkedList.indexOf("a"));
-//        controller.linkedList.forEach(System.out::println);
-
-
+    public void forEach(Consumer action) {
+        linkedList.forEach(action);
     }
 }
