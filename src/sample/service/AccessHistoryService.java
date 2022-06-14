@@ -4,6 +4,10 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 import java.util.function.Consumer;
 
+/**
+ * Code chưa được tối ưu vì sử dụng LinkedList build-in
+ * @param <E>
+ */
 public class AccessHistoryService<E> {
     private LinkedList<E> linkedList;
     public int pointer = -1;
