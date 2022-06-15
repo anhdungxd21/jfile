@@ -4,4 +4,5 @@ module javafx {
     requires javafx.fxml;
 
     opens sample;
+    opens sample.dto;
 }
