@@ -18,10 +18,7 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class Controller implements Initializable {
 
@@ -46,6 +43,80 @@ public class Controller implements Initializable {
     private AccessHistoryService<String> historyService = new AccessHistoryService<>();
 
     private List<File> listRootDirectory = new ArrayList<>();
+
+
+
+    @FXML
+    public void backHistory(ActionEvent actionEvent){
+        String path = historyService.prevItem();
+        if(path == null){
+            uri.setText(null);
+            observableListChangeElement(rootDirectory());
+        } else {
+            observableListChangeElement(path);
+        }
+    }
+
+    @FXML
+    public void nextHistory(ActionEvent actionEvent){
+        String path = historyService.nextItem();
+        if(path == null){
+            return;
+        }
+        observableListChangeElement(path);
+    }
+
+    @FXML
+    public void searchBoxEnterKey() {
+        String text = searchBox.getText();
+        if(text == null || "".equals(text)){
+            System.out.println("nothing");
+        }
+        //TODO triển khai code search
+        File currentFile = new File(historyService.currentItem());
+        List<File> resultList = new ArrayList<>();
+        preOderTreeSearch(currentFile, text,resultList);
+        if(resultList.size() == 0){
+            return;
+        }
+        File[] result = new File[resultList.size()];
+        resultList.toArray(result);
+        observableListChangeElement(result);
+    }
+
+    public void preOderTreeSearch(final File file,final String word,final List<File> resultList) {
+        if (file.listFiles() != null && file.isDirectory() && !file.getName().contains("$")){
+            File[] list = file.listFiles();
+            Arrays.asList(list).forEach(childFile -> {
+                if(childFile.getName().contains(word)){
+                    resultList.add(childFile);
+                }
+                preOderTreeSearch(childFile,word,resultList);
+            });
+        }
+    }
+
+    private void observableListChangeElement(String path){
+        File file = new File(path);
+        uri.setText(path);
+        observableListChangeElement(file.listFiles());
+    }
+
+    private void observableListChangeElement(File... files){
+        if(files == null){
+            data.removeAll(data);
+            return;
+        }
+        data.clear();
+        FileInformation[] fileInformations = FileInformation.parse(files);
+        data.addAll(fileInformations);
+    }
+
+    private File[] rootDirectory(){
+        File[] array = new File[listRootDirectory.size()];
+        listRootDirectory.toArray(array);
+        return array;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -80,50 +151,7 @@ public class Controller implements Initializable {
                     historyService.add(fileInformation1.getPath());
                     observableListChangeElement(fileInformation1.getPath());
                 }
-                index = -1;
             }
         });
-    }
-
-    @FXML
-    public void backHistory(ActionEvent actionEvent){
-        String path = historyService.prevItem();
-        if(path == null){
-            uri.setText(null);
-            observableListChangeElement(rootDirectory());
-        } else {
-            observableListChangeElement(path);
-        }
-    }
-
-    @FXML
-    public void nextHistory(ActionEvent actionEvent){
-        String path = historyService.nextItem();
-        if(path == null){
-            return;
-        }
-        observableListChangeElement(path);
-    }
-
-    private void observableListChangeElement(String path){
-        File file = new File(path);
-        uri.setText(path);
-        observableListChangeElement(file.listFiles());
-    }
-
-    private void observableListChangeElement(File... files){
-        if(files == null){
-            data.removeAll(data);
-            return;
-        }
-        data.clear();
-        FileInformation[] fileInformations = FileInformation.parse(files);
-        data.addAll(fileInformations);
-    }
-
-    private File[] rootDirectory(){
-        File[] array = new File[listRootDirectory.size()];
-        listRootDirectory.toArray(array);
-        return array;
     }
 }
