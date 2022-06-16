@@ -50,8 +50,7 @@ public class Controller implements Initializable {
     public void backHistory(ActionEvent actionEvent){
         String path = historyService.prevItem();
         if(path == null){
-            uri.setText(null);
-            observableListChangeElement(rootDirectory());
+            backToRootDirectory();
         } else {
             observableListChangeElement(path);
         }
@@ -67,10 +66,25 @@ public class Controller implements Initializable {
     }
 
     @FXML
+    public void uriChangeDirection() {
+        String text = uri.getText();
+        if(text == null || "".equals(text)) {
+            backToRootDirectory();
+        }
+        File file = new File(text);
+        if(file.exists()){
+            historyService.add(text);
+            observableListChangeElement(text);
+        }
+    }
+
+    @FXML
     public void searchBoxEnterKey() {
         String text = searchBox.getText();
         if(text == null || "".equals(text)){
+            backCurrent();
             System.out.println("nothing");
+            return;
         }
         //TODO triển khai code search
         File currentFile = new File(historyService.currentItem());
@@ -82,6 +96,11 @@ public class Controller implements Initializable {
         File[] result = new File[resultList.size()];
         resultList.toArray(result);
         observableListChangeElement(result);
+    }
+
+    private void backToRootDirectory() {
+        uri.setText(null);
+        observableListChangeElement(rootDirectory());
     }
 
     public void preOderTreeSearch(final File file,final String word,final List<File> resultList) {
@@ -100,6 +119,10 @@ public class Controller implements Initializable {
         File file = new File(path);
         uri.setText(path);
         observableListChangeElement(file.listFiles());
+    }
+
+    private void backCurrent(){
+        observableListChangeElement(historyService.currentItem());
     }
 
     private void observableListChangeElement(File... files){

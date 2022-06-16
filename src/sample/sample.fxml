@@ -25,7 +25,7 @@
                   <Insets right="20.0" />
                </HBox.margin>
             </Button>
-            <TextField fx:id="uri" prefWidth="360.0">
+            <TextField fx:id="uri" onAction="#uriChangeDirection" prefWidth="360.0">
                <HBox.margin>
                   <Insets right="20.0" />
                </HBox.margin>
@@ -39,9 +39,9 @@
       <TableView fx:id="tableView" prefHeight="500.0" prefWidth="700.0">
         <columns>
           <TableColumn fx:id="image" prefWidth="48.0" />
-            <TableColumn fx:id="fileName" prefWidth="320.0" text="Name" />
-          <TableColumn fx:id="dateModified" minWidth="2.0" prefWidth="165.0" text="Date modify" />
-            <TableColumn fx:id="size" minWidth="2.0" prefWidth="166.0" text="Size" />
+            <TableColumn fx:id="fileName" prefWidth="312.0" text="Name" />
+          <TableColumn fx:id="dateModified" minWidth="2.0" prefWidth="173.0" text="Date modify" />
+            <TableColumn fx:id="size" minWidth="2.0" prefWidth="166.0" text="Size (KB)" />
         </columns>
       </TableView>
    </children>
