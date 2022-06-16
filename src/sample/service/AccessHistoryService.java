@@ -22,6 +22,14 @@ public class AccessHistoryService<E> {
         }
     }
 
+    public boolean isInFirst(){
+        return linkedList.get(pointer) == linkedList.getFirst() ? true : false;
+    }
+
+    public boolean isInLast(){
+        return linkedList.get(pointer) == linkedList.getLast() ? true : false;
+    }
+
     public E currentItem() {
         return linkedList.get(pointer);
     }
