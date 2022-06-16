@@ -17,18 +17,18 @@ public class FileInformation {
     private final SimpleStringProperty dateModified;
     private final SimpleLongProperty size;
     private String path;
+    private boolean isDirectory;
 
-    public FileInformation(ImageView image, String fileName, String dateModified, long size, String path) {
+    public FileInformation(ImageView image, String fileName, String dateModified, long size, String path, boolean isDirectory) {
         this.image = image;
         this.fileName = new SimpleStringProperty(fileName);
         this.dateModified = new SimpleStringProperty(dateModified);
         this.size = new SimpleLongProperty(size);
         this.path = path;
+        this.isDirectory = isDirectory;
     }
 
     public static FileInformation parse(File file) {
-
-        System.out.println(Controller.class.getResourceAsStream("resource/folder.png"));
         ImageView imageView = file.isDirectory() ?
                 new ImageView(new Image(Controller.class.getResourceAsStream("resource/folder.png"))) :
                 new ImageView(new Image(Controller.class.getResourceAsStream("resource/file.png")));
@@ -40,15 +40,19 @@ public class FileInformation {
 
         long bytes =  file.length()/1024;
 
-        return new FileInformation(imageView, fileName, dateModified, bytes, file.getPath());
+        return new FileInformation(imageView, fileName, dateModified, bytes, file.getPath(), file.isDirectory());
     }
 
     public static FileInformation[] parse(File... files){
         List<FileInformation> list = new ArrayList<>();
         for (int i = 0; i < files.length; i++) {
-            list.add(parse(files[i]));
+            if (!files[i].isHidden()) {
+                list.add(parse(files[i]));
+            }
         }
-        return (FileInformation[]) list.toArray();
+        FileInformation[] fileInformations = new FileInformation[list.size()];
+        list.toArray(fileInformations);
+        return fileInformations;
     }
 
     public ImageView getImage() {
@@ -80,5 +84,13 @@ public class FileInformation {
 
     public void setSize(int size) {
         this.size.set(size);
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public boolean isDirectory() {
+        return isDirectory;
     }
 }
