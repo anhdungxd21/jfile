@@ -16,7 +16,7 @@ public class FileInformation {
     private final SimpleStringProperty fileName;
     private final SimpleStringProperty dateModified;
     private final SimpleLongProperty size;
-    private String path;
+    private final SimpleStringProperty path;
     private boolean isDirectory;
 
     private FileInformation(ImageView image, String fileName, String dateModified, long size, String path, boolean isDirectory) {
@@ -24,7 +24,7 @@ public class FileInformation {
         this.fileName = new SimpleStringProperty(fileName);
         this.dateModified = new SimpleStringProperty(dateModified);
         this.size = new SimpleLongProperty(size);
-        this.path = path;
+        this.path = new SimpleStringProperty(path);
         this.isDirectory = isDirectory;
     }
 
@@ -87,7 +87,7 @@ public class FileInformation {
     }
 
     public String getPath() {
-        return path;
+        return path.get();
     }
 
     public boolean isDirectory() {
