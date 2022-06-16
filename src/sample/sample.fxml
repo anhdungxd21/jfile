@@ -8,45 +8,46 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 
-<FlowPane alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
+<FlowPane alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <padding>
       <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
    </padding>
    <children>
-      <HBox prefHeight="44.0" prefWidth="705.0">
+      <HBox prefHeight="44.0" prefWidth="924.0">
          <children>
-            <Button mnemonicParsing="false" onAction="#backHistory" text="Back">
+            <Button fx:id="backHistoryButton" mnemonicParsing="false" onAction="#backHistory" prefHeight="25.0" prefWidth="80.0" text="Back">
                <HBox.margin>
                   <Insets right="20.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" onAction="#nextHistory" text="Next">
+            <Button fx:id="nextHistoryButton" mnemonicParsing="false" onAction="#nextHistory" prefHeight="25.0" prefWidth="80.0" text="Next">
                <HBox.margin>
                   <Insets right="20.0" />
                </HBox.margin>
             </Button>
-            <Button layoutX="71.0" layoutY="20.0" mnemonicParsing="false" onAction="#backParentDirectory" text=" Up ">
+            <Button fx:id="backParentButton" layoutX="71.0" layoutY="20.0" mnemonicParsing="false" onAction="#backParentDirectory" prefHeight="25.0" prefWidth="80.0" text=" Up ">
                <HBox.margin>
                   <Insets right="20.0" />
                </HBox.margin>
             </Button>
-            <TextField fx:id="uri" onAction="#uriChangeDirection" prefHeight="25.0" prefWidth="298.0">
+            <TextField fx:id="uri" onAction="#uriChangeDirection" prefHeight="25.0" prefWidth="400.0">
                <HBox.margin>
                   <Insets right="20.0" />
                </HBox.margin>
             </TextField>
-            <TextField fx:id="searchBox" onAction="#searchBoxEnterKey" prefWidth="200.0" />
+            <TextField fx:id="searchBox" onAction="#searchBoxEnterKey" prefWidth="210.0" />
          </children>
          <padding>
             <Insets bottom="20.0" top="10.0" />
          </padding>
       </HBox>
-      <TableView fx:id="tableView" prefHeight="500.0" prefWidth="700.0">
+      <TableView fx:id="tableView" prefHeight="668.0" prefWidth="924.0">
         <columns>
           <TableColumn fx:id="image" prefWidth="48.0" />
             <TableColumn fx:id="fileName" prefWidth="312.0" text="Name" />
           <TableColumn fx:id="dateModified" minWidth="2.0" prefWidth="173.0" text="Date modify" />
             <TableColumn fx:id="size" minWidth="2.0" prefWidth="166.0" text="Size (KB)" />
+            <TableColumn fx:id="source" minWidth="2.0" prefWidth="224.0" text="Source" />
         </columns>
       </TableView>
    </children>

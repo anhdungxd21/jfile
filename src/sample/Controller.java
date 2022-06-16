@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -24,6 +25,12 @@ import java.util.*;
 public class Controller implements Initializable {
 
     @FXML
+    private Button backHistoryButton;
+    @FXML
+    private Button nextHistoryButton;
+    @FXML
+    private Button backParentButton;
+    @FXML
     private TextField uri;
     @FXML
     private TextField searchBox;
@@ -38,6 +45,8 @@ public class Controller implements Initializable {
     private TableColumn<FileInformation, String> dateModified;
     @FXML
     private TableColumn<FileInformation, String> size;
+    @FXML
+    private TableColumn<FileInformation, String> source;
 
     private ObservableList<FileInformation> data = FXCollections.observableArrayList();
 
@@ -48,9 +57,11 @@ public class Controller implements Initializable {
 
     @FXML
     public void backHistory(ActionEvent actionEvent) {
+        nextHistoryButton.setDisable(false);
         String path = historyService.prevItem();
         if (path == null) {
             backToRootDirectory();
+            backHistoryButton.setDisable(true);
         } else {
             observableListChangeElement(path);
         }
@@ -58,11 +69,29 @@ public class Controller implements Initializable {
 
     @FXML
     public void nextHistory(ActionEvent actionEvent) {
+        if(historyService.isInLast()){
+            nextHistoryButton.setDisable(true);
+        }
         String path = historyService.nextItem();
         if (path == null) {
             return;
         }
+        backHistoryButton.setDisable(false);
         observableListChangeElement(path);
+    }
+
+    @FXML
+    public void backParentDirectory() {
+        File file = new File(uri.getText());
+        File parent = file.getParentFile();
+        if(parent == null) {
+            System.out.println("nulllll");
+            backParentButton.setDisable(true);
+            backToRootDirectory();
+            return;
+        }
+        historyServiceAdd(parent.getPath());
+        observableListChangeElement(parent.getPath());
     }
 
     @FXML
@@ -73,7 +102,7 @@ public class Controller implements Initializable {
         }
         File file = new File(text);
         if (file.exists()) {
-            historyService.add(text);
+            historyServiceAdd(text);
             observableListChangeElement(text);
         }
     }
@@ -98,17 +127,11 @@ public class Controller implements Initializable {
         observableListChangeElement(result);
     }
 
-    @FXML
-    public void backParentDirectory() {
-        File file = new File(uri.getText());
-        File parent = file.getParentFile();
-        if(parent == null) {
-            System.out.println("nulllll");
-            backToRootDirectory();
-            return;
-        }
-        observableListChangeElement(parent.getPath());
 
+    private void historyServiceAdd(String text) {
+        historyService.add(text);
+        backHistoryButton.setDisable(false);
+        backParentButton.setDisable(false);
     }
 
     private void backToRootDirectory() {
@@ -157,6 +180,8 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        backHistoryButton.setDisable(true);
+        nextHistoryButton.setDisable(true);
         //place hold setup
         uri.setPromptText("This PC");
         searchBox.setPromptText("Search");
@@ -166,6 +191,7 @@ public class Controller implements Initializable {
         fileName.setCellValueFactory(new PropertyValueFactory<>("fileName"));
         dateModified.setCellValueFactory(new PropertyValueFactory<>("dateModified"));
         size.setCellValueFactory(new PropertyValueFactory<>("size"));
+        source.setCellValueFactory(new PropertyValueFactory<>("path"));
 
         Iterator iterator = Paths.get(System.getProperty("user.dir")).getFileSystem().getRootDirectories().iterator();
         while (iterator.hasNext()) {
@@ -185,7 +211,7 @@ public class Controller implements Initializable {
                 int index = (int) newVal;
                 FileInformation fileInformation1 = data.get(index);
                 if(fileInformation1.isDirectory()) {
-                    historyService.add(fileInformation1.getPath());
+                    historyServiceAdd(fileInformation1.getPath());
                     observableListChangeElement(fileInformation1.getPath());
                 }
             }
@@ -196,7 +222,7 @@ public class Controller implements Initializable {
 //            public void changed(ObservableValue<? extends FileInformation> observableValue, FileInformation fileInformation, FileInformation t1) {
 //                System.out.println(t1.getPath());
 //                if(t1.isDirectory()) {
-//                    historyService.add(t1.getPath());
+//                    historyServiceAdd(t1.getPath());
 //                    observableListChangeElement(t1.getPath());
 //                }
 //            }
