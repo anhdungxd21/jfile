@@ -98,6 +98,19 @@ public class Controller implements Initializable {
         observableListChangeElement(result);
     }
 
+    @FXML
+    public void backParentDirectory() {
+        File file = new File(uri.getText());
+        File parent = file.getParentFile();
+        if(parent == null) {
+            System.out.println("nulllll");
+            backToRootDirectory();
+            return;
+        }
+        observableListChangeElement(parent.getPath());
+
+    }
+
     private void backToRootDirectory() {
         uri.setText(null);
         observableListChangeElement(rootDirectory());

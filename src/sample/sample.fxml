@@ -25,7 +25,12 @@
                   <Insets right="20.0" />
                </HBox.margin>
             </Button>
-            <TextField fx:id="uri" onAction="#uriChangeDirection" prefWidth="360.0">
+            <Button layoutX="71.0" layoutY="20.0" mnemonicParsing="false" onAction="#backParentDirectory" text=" Up ">
+               <HBox.margin>
+                  <Insets right="20.0" />
+               </HBox.margin>
+            </Button>
+            <TextField fx:id="uri" onAction="#uriChangeDirection" prefHeight="25.0" prefWidth="298.0">
                <HBox.margin>
                   <Insets right="20.0" />
                </HBox.margin>
