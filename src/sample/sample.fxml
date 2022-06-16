@@ -15,12 +15,12 @@
    <children>
       <HBox prefHeight="44.0" prefWidth="705.0">
          <children>
-            <Button mnemonicParsing="false" text="Back">
+            <Button mnemonicParsing="false" onAction="#backHistory" text="Back">
                <HBox.margin>
                   <Insets right="20.0" />
                </HBox.margin>
             </Button>
-            <Button mnemonicParsing="false" text="Next">
+            <Button mnemonicParsing="false" onAction="#nextHistory" text="Next">
                <HBox.margin>
                   <Insets right="20.0" />
                </HBox.margin>
