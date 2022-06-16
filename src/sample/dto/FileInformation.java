@@ -19,7 +19,7 @@ public class FileInformation {
     private String path;
     private boolean isDirectory;
 
-    public FileInformation(ImageView image, String fileName, String dateModified, long size, String path, boolean isDirectory) {
+    private FileInformation(ImageView image, String fileName, String dateModified, long size, String path, boolean isDirectory) {
         this.image = image;
         this.fileName = new SimpleStringProperty(fileName);
         this.dateModified = new SimpleStringProperty(dateModified);
@@ -50,9 +50,9 @@ public class FileInformation {
                 list.add(parse(files[i]));
             }
         }
-        FileInformation[] fileInformations = new FileInformation[list.size()];
-        list.toArray(fileInformations);
-        return fileInformations;
+        FileInformation[] fileInformationArr = new FileInformation[list.size()];
+        list.toArray(fileInformationArr);
+        return fileInformationArr;
     }
 
     public ImageView getImage() {
