@@ -3,6 +3,7 @@ package sample;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -45,11 +46,10 @@ public class Controller implements Initializable {
     private List<File> listRootDirectory = new ArrayList<>();
 
 
-
     @FXML
-    public void backHistory(ActionEvent actionEvent){
+    public void backHistory(ActionEvent actionEvent) {
         String path = historyService.prevItem();
-        if(path == null){
+        if (path == null) {
             backToRootDirectory();
         } else {
             observableListChangeElement(path);
@@ -57,9 +57,9 @@ public class Controller implements Initializable {
     }
 
     @FXML
-    public void nextHistory(ActionEvent actionEvent){
+    public void nextHistory(ActionEvent actionEvent) {
         String path = historyService.nextItem();
-        if(path == null){
+        if (path == null) {
             return;
         }
         observableListChangeElement(path);
@@ -68,11 +68,11 @@ public class Controller implements Initializable {
     @FXML
     public void uriChangeDirection() {
         String text = uri.getText();
-        if(text == null || "".equals(text)) {
+        if (text == null || "".equals(text)) {
             backToRootDirectory();
         }
         File file = new File(text);
-        if(file.exists()){
+        if (file.exists()) {
             historyService.add(text);
             observableListChangeElement(text);
         }
@@ -81,7 +81,7 @@ public class Controller implements Initializable {
     @FXML
     public void searchBoxEnterKey() {
         String text = searchBox.getText();
-        if(text == null || "".equals(text)){
+        if (text == null || "".equals(text)) {
             backCurrent();
             System.out.println("nothing");
             return;
@@ -89,8 +89,8 @@ public class Controller implements Initializable {
         //TODO triển khai code search
         File currentFile = new File(historyService.currentItem());
         List<File> resultList = new ArrayList<>();
-        preOderTreeSearch(currentFile, text,resultList);
-        if(resultList.size() == 0){
+        preOderTreeSearch(currentFile, text, resultList);
+        if (resultList.size() == 0) {
             return;
         }
         File[] result = new File[resultList.size()];
@@ -103,39 +103,40 @@ public class Controller implements Initializable {
         observableListChangeElement(rootDirectory());
     }
 
-    public void preOderTreeSearch(final File file,final String word,final List<File> resultList) {
-        if (file.listFiles() != null && file.isDirectory() && !file.getName().contains("$")){
+    public void preOderTreeSearch(final File file, final String word, final List<File> resultList) {
+        if (file.listFiles() != null && file.isDirectory() && !file.getName().contains("$")) {
             File[] list = file.listFiles();
             Arrays.asList(list).forEach(childFile -> {
-                if(childFile.getName().contains(word)){
+                if (childFile.getName().contains(word)) {
                     resultList.add(childFile);
                 }
-                preOderTreeSearch(childFile,word,resultList);
+                preOderTreeSearch(childFile, word, resultList);
             });
         }
     }
 
-    private void observableListChangeElement(String path){
+    private void observableListChangeElement(String path) {
         File file = new File(path);
         uri.setText(path);
         observableListChangeElement(file.listFiles());
     }
 
-    private void backCurrent(){
+    private void backCurrent() {
         observableListChangeElement(historyService.currentItem());
     }
 
-    private void observableListChangeElement(File... files){
-        if(files == null){
+    private void observableListChangeElement(File... files) {
+        if (files == null) {
             data.removeAll(data);
             return;
         }
         data.clear();
         FileInformation[] fileInformations = FileInformation.parse(files);
         data.addAll(fileInformations);
+        tableView.setItems(data);
     }
 
-    private File[] rootDirectory(){
+    private File[] rootDirectory() {
         File[] array = new File[listRootDirectory.size()];
         listRootDirectory.toArray(array);
         return array;
@@ -164,8 +165,8 @@ public class Controller implements Initializable {
 
         tableView.setItems(data);
 
-        TableView.TableViewSelectionModel<FileInformation> fileSelect = tableView.getSelectionModel();
-        fileSelect.selectedIndexProperty().addListener(new ChangeListener<Number>() {
+//        TableView.TableViewSelectionModel<FileInformation> fileSelect = ;
+        tableView.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number oldVal, Number newVal) {
                 int index = (int) newVal;
@@ -176,5 +177,16 @@ public class Controller implements Initializable {
                 }
             }
         });
+
+//        tableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<FileInformation>() {
+//            @Override
+//            public void changed(ObservableValue<? extends FileInformation> observableValue, FileInformation fileInformation, FileInformation t1) {
+//                System.out.println(t1.getPath());
+//                if(t1.isDirectory()) {
+//                    historyService.add(t1.getPath());
+//                    observableListChangeElement(t1.getPath());
+//                }
+//            }
+//        });
     }
 }
