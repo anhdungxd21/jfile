@@ -8,10 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import sample.dto.FileInformation;
 import sample.service.AccessHistoryService;
@@ -85,7 +82,6 @@ public class Controller implements Initializable {
         File file = new File(uri.getText());
         File parent = file.getParentFile();
         if(parent == null) {
-            System.out.println("nulllll");
             backParentButton.setDisable(true);
             backToRootDirectory();
             return;
@@ -112,7 +108,6 @@ public class Controller implements Initializable {
         String text = searchBox.getText();
         if (text == null || "".equals(text)) {
             backCurrent();
-            System.out.println("nothing");
             return;
         }
         //TODO triển khai code search
@@ -182,6 +177,7 @@ public class Controller implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         backHistoryButton.setDisable(true);
         nextHistoryButton.setDisable(true);
+        backParentButton.setDisable(true);
         //place hold setup
         uri.setPromptText("This PC");
         searchBox.setPromptText("Search");
@@ -204,28 +200,18 @@ public class Controller implements Initializable {
 
         tableView.setItems(data);
 
-//        TableView.TableViewSelectionModel<FileInformation> fileSelect = ;
-        tableView.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number oldVal, Number newVal) {
-                int index = (int) newVal;
-                FileInformation fileInformation1 = data.get(index);
-                if(fileInformation1.isDirectory()) {
-                    historyServiceAdd(fileInformation1.getPath());
-                    observableListChangeElement(fileInformation1.getPath());
+        tableView.setRowFactory(tv -> {
+            TableRow<FileInformation> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if(event.getClickCount() == 2 && (!row.isEmpty())) {
+                    FileInformation fileInformation = row.getItem();
+                    if(fileInformation.isDirectory()) {
+                        historyServiceAdd(fileInformation.getPath());
+                        observableListChangeElement(fileInformation.getPath());
+                    }
                 }
-            }
+            });
+            return row;
         });
-
-//        tableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<FileInformation>() {
-//            @Override
-//            public void changed(ObservableValue<? extends FileInformation> observableValue, FileInformation fileInformation, FileInformation t1) {
-//                System.out.println(t1.getPath());
-//                if(t1.isDirectory()) {
-//                    historyServiceAdd(t1.getPath());
-//                    observableListChangeElement(t1.getPath());
-//                }
-//            }
-//        });
     }
 }
