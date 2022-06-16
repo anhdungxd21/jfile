@@ -13,7 +13,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         primaryStage.setTitle("Java File Manager");
-        primaryStage.setScene(new Scene(root, 800, 600));
+        primaryStage.setScene(new Scene(root, 1024, 768));
         primaryStage.getIcons().add(new Image(this.getClass().getResourceAsStream("resource/icon.png")));
         primaryStage.show();
     }
