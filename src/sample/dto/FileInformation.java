@@ -46,7 +46,7 @@ public class FileInformation {
     public static FileInformation[] parse(File... files){
         List<FileInformation> list = new ArrayList<>();
         for (int i = 0; i < files.length; i++) {
-            if (!files[i].isHidden()) {
+            if (files[i].getName().equals("") || !files[i].isHidden()) {
                 list.add(parse(files[i]));
             }
         }
