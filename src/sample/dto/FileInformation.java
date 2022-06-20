@@ -35,7 +35,7 @@ public class FileInformation {
 
         String fileName = file.getName().equals("") ? file.getPath() : file.getName();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm aa");
+        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy HH:mm aa");
         String dateModified = sdf.format(file.lastModified());
 
         long bytes =  file.length()/1024;
